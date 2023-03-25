@@ -36,8 +36,9 @@ REDIS_DISTANCE_METRIC = os.environ.get("REDIS_DISTANCE_METRIC", "COSINE")
 REDIS_INDEX_TYPE = os.environ.get("REDIS_INDEX_TYPE", "FLAT")
 assert REDIS_INDEX_TYPE in ("FLAT", "HNSW")
 
-# OpenAI Ada Embeddings Dimension
-VECTOR_DIMENSION = 1536
+# Embeddings Dimension
+VECTOR_DIMENSION = int(os.environ.get("VECTOR_DIMENSION"))
+assert VECTOR_DIMENSION > 0
 
 # RediSearch constants
 REDIS_DEFAULT_ESCAPED_CHARS = re.compile(r"[,.<>{}\[\]\\\"\':;!@#$%^&*()\-+=~\/ ]")

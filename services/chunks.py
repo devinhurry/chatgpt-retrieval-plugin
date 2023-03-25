@@ -4,7 +4,7 @@ from models.models import Document, DocumentChunk, DocumentChunkMetadata
 
 import tiktoken
 
-from services.openai import get_embeddings
+from embeddings.factory import get_embeddings_provider
 
 # Global variables
 tokenizer = tiktoken.get_encoding(
@@ -182,6 +182,8 @@ def get_document_chunks(
 
     # Get all the embeddings for the document chunks in batches, using get_embeddings
     embeddings: List[List[float]] = []
+
+    embeddings_provider = get_embeddings_provider()
     for i in range(0, len(all_chunks), EMBEDDINGS_BATCH_SIZE):
         # Get the text of the chunks in the current batch
         batch_texts = [
@@ -189,7 +191,7 @@ def get_document_chunks(
         ]
 
         # Get the embeddings for the batch texts
-        batch_embeddings = get_embeddings(batch_texts)
+        batch_embeddings = embeddings_provider.get_embeddings(batch_texts)
 
         # Append the batch embeddings to the embeddings list
         embeddings.extend(batch_embeddings)

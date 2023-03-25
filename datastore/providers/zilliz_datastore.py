@@ -33,7 +33,11 @@ ZILLIZ_USE_SECURITY = False if ZILLIZ_PASSWORD is None else True
 
 
 UPSERT_BATCH_SIZE = 100
-OUTPUT_DIM = 1536
+
+# Embeddings dimension
+VECTOR_DIMENSION = int(os.environ.get("VECTOR_DIMENSION"))
+assert VECTOR_DIMENSION > 0
+
 
 
 class Required:
@@ -49,7 +53,7 @@ SCHEMA = [
     ),
     (
         "embedding",
-        FieldSchema(name="embedding", dtype=DataType.FLOAT_VECTOR, dim=OUTPUT_DIM),
+        FieldSchema(name="embedding", dtype=DataType.FLOAT_VECTOR, dim=VECTOR_DIMENSION),
         Required,
     ),
     (

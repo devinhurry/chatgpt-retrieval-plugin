@@ -1,3 +1,5 @@
+# Fork of ChatGPT Retrieval Plugin
+- support text2vec embeddding (VECTOR_DIMENSION env required according to the model)
 # ChatGPT Retrieval Plugin
 
 > **Join the [ChatGPT plugins waitlist here](https://openai.com/waitlist/plugins)!**

@@ -30,6 +30,9 @@ pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENVIRONMENT)
 # Set the batch size for upserting vectors to Pinecone
 UPSERT_BATCH_SIZE = 100
 
+# Embeddings dimension
+VECTOR_DIMENSION = int(os.environ.get("VECTOR_DIMENSION"))
+assert VECTOR_DIMENSION > 0
 
 class PineconeDataStore(DataStore):
     def __init__(self):
@@ -46,7 +49,7 @@ class PineconeDataStore(DataStore):
                 )
                 pinecone.create_index(
                     PINECONE_INDEX,
-                    dimension=1536,  # dimensionality of OpenAI ada v2 embeddings
+                    dimension=VECTOR_DIMENSION,
                     metadata_config={"indexed": fields_to_index},
                 )
                 self.index = pinecone.Index(PINECONE_INDEX)
