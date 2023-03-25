@@ -13,7 +13,7 @@ tokenizer = tiktoken.get_encoding(
 
 # Constants
 CHUNK_SIZE = 200  # The target size of each text chunk in tokens
-MIN_CHUNK_SIZE_CHARS = 350  # The minimum size of each text chunk in characters
+MIN_CHUNK_SIZE_CHARS = 100  # The minimum size of each text chunk in characters
 MIN_CHUNK_LENGTH_TO_EMBED = 5  # Discard chunks shorter than this
 EMBEDDINGS_BATCH_SIZE = 128  # The number of embeddings to request at a time
 MAX_NUM_CHUNKS = 10000  # The maximum number of chunks to generate from a text
@@ -36,7 +36,7 @@ def get_text_chunks(text: str, chunk_token_size: Optional[int]) -> List[str]:
 
     # Tokenize the text
     tokens = tokenizer.encode(text, disallowed_special=())
-
+    remaining_text = text
     # Initialize an empty list of chunks
     chunks = []
 
@@ -54,10 +54,16 @@ def get_text_chunks(text: str, chunk_token_size: Optional[int]) -> List[str]:
         # Decode the chunk into text
         chunk_text = tokenizer.decode(chunk)
 
+        # Because tokens[:chunk_size] might cut a multi-byte utf8 character in the middle
+        # Will use the text to recalculate the chunk
+        chunk_text = remaining_text[: len(chunk_text)]
+        chunk = tokenizer.encode(chunk_text, disallowed_special=())
+
         # Skip the chunk if it is empty or whitespace
         if not chunk_text or chunk_text.isspace():
             # Remove the tokens corresponding to the chunk text from the remaining tokens
             tokens = tokens[len(chunk) :]
+            remaining_text = remaining_text[len(chunk_text) :]
             # Continue to the next iteration of the loop
             continue
 
@@ -66,6 +72,10 @@ def get_text_chunks(text: str, chunk_token_size: Optional[int]) -> List[str]:
             chunk_text.rfind("."),
             chunk_text.rfind("?"),
             chunk_text.rfind("!"),
+            # full-width punctuation marks
+            chunk_text.rfind("。"),
+            chunk_text.rfind("？"),
+            chunk_text.rfind("！"),            
             chunk_text.rfind("\n"),
         )
 
@@ -83,6 +93,7 @@ def get_text_chunks(text: str, chunk_token_size: Optional[int]) -> List[str]:
 
         # Remove the tokens corresponding to the chunk text from the remaining tokens
         tokens = tokens[len(tokenizer.encode(chunk_text, disallowed_special=())) :]
+        remaining_text = remaining_text[len(chunk_text) :]
 
         # Increment the number of chunks
         num_chunks += 1

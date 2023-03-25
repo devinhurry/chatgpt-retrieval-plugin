@@ -24,7 +24,14 @@ async def process_file_dump(
 ):
     # create a ZipFile object and extract all the files into a directory named 'dump'
     with zipfile.ZipFile(filepath) as zip_file:
-        zip_file.extractall("dump")
+        for f in zip_file.namelist():
+            right_f = f.encode("cp437").decode("utf-8")
+            # copy to dump
+            zip_file.extract(f, "dump")
+            # rename it
+            os.rename(os.path.join("dump", f), os.path.join("dump", right_f))
+            
+        # zip_file.extractall("dump",)
 
     documents = []
     skipped_files = []

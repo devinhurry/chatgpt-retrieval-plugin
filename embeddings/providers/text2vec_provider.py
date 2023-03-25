@@ -13,12 +13,11 @@ class Text2VecProvider(EmbeddingsProvider):
         """
         from text2vec import SentenceModel
 
-        model = None
-        if model is None:
-            model = SentenceModel(self.model_name)
-        embeddings = model.encode(texts)
+        if self.model is None:
+            self.model = SentenceModel(self.model_name)
+        embeddings = self.model.encode(texts)
         result = []
         for e in embeddings:
             result.append(e.tolist())
         return result
-    
+     

@@ -1,7 +1,12 @@
 # Fork of ChatGPT Retrieval Plugin
-- support text2vec embeddding (VECTOR_DIMENSION env required according to the model)
+- support text2vec embeddding 
+  - VECTOR_DIMENSION env required according to the model
+  - EMBEDDINGS_PROVIDER must set to text2vec or openai
+  - TEXT2VEC_MODEL must set if you use text2vec (shibing624/text2vec-base-chinese recommended for Chinese)
+- fix the chunk problem when the text is multi-byte utf8 charaters, the character may be cut in the middle.
+- fix the zip encoding issue
 # ChatGPT Retrieval Plugin
-
+ 
 > **Join the [ChatGPT plugins waitlist here](https://openai.com/waitlist/plugins)!**
 
 Find an example video of a Retrieval Plugin that has access to the UN Annual Reports from 2018 to 2022 [here](https://cdn.openai.com/chat-plugins/retrieval-gh-repo-readme/Retrieval-Final.mp4).
